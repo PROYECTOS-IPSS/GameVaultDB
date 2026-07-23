@@ -1,5 +1,6 @@
 {
   "watch": ["src", "views"],
-  "ext": "ts,hbs,css",
-  "exec": "tsc && node dist/app.js"
+  "ext": "ts,hbs,css,js",
+  "ignore": ["dist", "node_modules"],
+  "exec": "ts-node src/index.ts"
 }

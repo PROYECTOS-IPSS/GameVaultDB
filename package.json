@@ -2,20 +2,25 @@
   "name": "gestor-juegos",
   "version": "1.0.0",
   "description": "Gestor de juegos",
-  "main": "dist/app.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-handlebars": "^9.0.1"
+    "express-handlebars": "^9.0.1",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
     "nodemon": "^3.1.14",
-    "typescript": "^7.0.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
