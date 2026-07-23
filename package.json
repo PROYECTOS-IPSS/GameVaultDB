@@ -1,0 +1,21 @@
+{
+  "name": "gestor-juegos",
+  "version": "1.0.0",
+  "description": "Gestor de juegos",
+  "main": "dist/app.js",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-handlebars": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "nodemon": "^3.1.14",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "watch": ["src", "views"],
+  "ext": "ts,hbs,css",
+  "exec": "tsc && node dist/app.js"
+}
