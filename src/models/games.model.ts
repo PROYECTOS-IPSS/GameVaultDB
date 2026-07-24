@@ -14,7 +14,7 @@ export const GameModel = {
     if (filters?.maxPrice) where.price = { lte: Number(filters.maxPrice) };
 
     const orderBy: Record<string, string> =
-      (sortBy === 'title' || sortBy === 'price')
+      sortBy === 'title' || sortBy === 'price'
         ? { [sortBy]: sortOrder === 'asc' ? 'asc' : 'desc' }
         : { createdAt: 'desc' };
 
