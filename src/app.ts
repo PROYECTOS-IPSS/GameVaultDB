@@ -1,8 +1,10 @@
 import express from 'express';
 import path from 'path';
 import methodOverride from 'method-override';
+import session from 'express-session';
 import { engine } from 'express-handlebars';
 import { HomeModel } from './models/home.model';
+import { exposeUser } from './middleware/auth.middleware';
 import authRoutes from './routes/auth.routes';
 import gamesRoutes from './routes/games.routes';
 
@@ -27,6 +29,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'gamevault-dev-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  }),
+);
+app.use(exposeUser);
 
 app.use('/auth', authRoutes);
 app.use('/games', gamesRoutes);
