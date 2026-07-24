@@ -1,6 +1,8 @@
 import express from "express";
 import path from "path";
+import methodOverride from "method-override";
 import { engine } from "express-handlebars";
+import { HomeModel } from "./models/home.model";
 import authRoutes from "./routes/auth.routes";
 import gamesRoutes from "./routes/games.routes";
 
@@ -13,6 +15,9 @@ app.engine(
     defaultLayout: "main",
     layoutsDir: path.join(__dirname, "..", "views", "layouts"),
     partialsDir: path.join(__dirname, "..", "views", "partials"),
+    helpers: {
+      eq: (a: unknown, b: unknown) => a === b,
+    },
   })
 );
 app.set("view engine", "hbs");
@@ -20,13 +25,23 @@ app.set("views", path.join(__dirname, "..", "views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use("/auth", authRoutes);
 app.use("/games", gamesRoutes);
 
-app.get("/", (_req, res) => {
-  res.render("home");
+app.get("/", async (_req, res) => {
+  try {
+    const [featured, stats] = await Promise.all([
+      HomeModel.getFeatured(6),
+      HomeModel.getStats(),
+    ]);
+    res.render("home", { isHome: true, featured, stats });
+  } catch (error) {
+    console.error(error);
+    res.render("home", { isHome: true, featured: [], stats: { games: 0, platforms: 0, genres: 0 } });
+  }
 });
 
 app.use((_req, res) => {

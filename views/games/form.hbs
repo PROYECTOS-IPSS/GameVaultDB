@@ -1,0 +1,99 @@
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/games" class="text-decoration-none">Juegos</a></li>
+            <li class="breadcrumb-item active">{{#if game}}Editar{{else}}Nuevo{{/if}}</li>
+          </ol>
+        </nav>
+
+        <div class="card bg-dark border-secondary">
+          <div class="card-body p-4">
+            <h2 class="mb-4">{{#if game}}Editar juego{{else}}Nuevo juego{{/if}}</h2>
+            
+            <form action="/games{{#if game}}/{{game.id}}{{/if}}" method="POST">
+              {{#if game}}
+              <input type="hidden" name="_method" value="PUT">
+              {{/if}}
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Título</label>
+                  <input type="text" name="title" class="form-control bg-dark text-light border-secondary" 
+                         value="{{game.title}}" required>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Descripción</label>
+                  <textarea name="description" class="form-control bg-dark text-light border-secondary" 
+                            rows="3">{{game.description}}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Año de lanzamiento</label>
+                  <input type="number" name="releaseYear" class="form-control bg-dark text-light border-secondary" 
+                         value="{{game.releaseYear}}" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Precio</label>
+                  <input type="number" step="0.01" name="price" class="form-control bg-dark text-light border-secondary" 
+                         value="{{game.price}}" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Género</label>
+                  <select name="genreId" class="form-select bg-dark text-light border-secondary" required>
+                    <option value="">Seleccionar...</option>
+                    {{#each genres}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.genreId)}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Plataforma</label>
+                  <select name="platformId" class="form-select bg-dark text-light border-secondary" required>
+                    <option value="">Seleccionar...</option>
+                    {{#each platforms}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.platformId)}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Editorial</label>
+                  <select name="publisherId" class="form-select bg-dark text-light border-secondary" required>
+                    <option value="">Seleccionar...</option>
+                    {{#each publishers}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.publisherId)}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Desarrollador</label>
+                  <select name="developerId" class="form-select bg-dark text-light border-secondary" required>
+                    <option value="">Seleccionar...</option>
+                    {{#each developers}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.developerId)}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-4">
+                  <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-check-lg me-2"></i>{{#if game}}Guardar cambios{{else}}Crear juego{{/if}}
+                  </button>
+                  <a href="/games" class="btn btn-outline-light">Cancelar</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

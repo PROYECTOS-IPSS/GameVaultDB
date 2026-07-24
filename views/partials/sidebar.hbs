@@ -1,0 +1,32 @@
+<div class="sidebar-sticky">
+  <h6 class="text-uppercase text-secondary small fw-semibold mb-3">Filtros</h6>
+  
+  <div class="mb-4">
+    <label class="form-label small text-secondary">Plataforma</label>
+    <select class="form-select form-select-sm bg-dark text-light border-secondary">
+      <option value="">Todas</option>
+      {{#each platforms}}
+      <option value="{{this.id}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label small text-secondary">Género</label>
+    <select class="form-select form-select-sm bg-dark text-light border-secondary">
+      <option value="">Todos</option>
+      {{#each genres}}
+      <option value="{{this.id}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label small text-secondary">Precio máximo</label>
+    <input type="range" class="form-range" min="0" max="100" value="100">
+  </div>
+
+  <button class="btn btn-danger w-100 btn-sm">
+    <i class="bi bi-funnel me-2"></i>Aplicar filtros
+  </button>
+</div>
