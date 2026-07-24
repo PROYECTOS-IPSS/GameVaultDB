@@ -6,6 +6,7 @@ import { engine } from 'express-handlebars';
 import { HomeModel } from './models/home.model';
 import { exposeUser } from './middleware/auth.middleware';
 import authRoutes from './routes/auth.routes';
+import collectionRoutes from './routes/collection.routes';
 import gamesRoutes from './routes/games.routes';
 
 const app = express();
@@ -19,6 +20,7 @@ app.engine(
     partialsDir: path.join(__dirname, '..', 'views', 'partials'),
     helpers: {
       eq: (a: unknown, b: unknown) => a === b,
+      includes: (value: unknown, array: unknown[]) => Array.isArray(array) && array.includes(value as never),
     },
   }),
 );
@@ -42,8 +44,8 @@ app.use(
   }),
 );
 app.use(exposeUser);
-
 app.use('/auth', authRoutes);
+app.use('/collection', collectionRoutes);
 app.use('/games', gamesRoutes);
 
 app.get('/', async (_req, res) => {
