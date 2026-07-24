@@ -122,11 +122,42 @@ async function main() {
     });
   }
 
-  const [usersCount, gamesCount] = await Promise.all([
+  // Seed user-game relations (relacionar usuarios con juegos)
+  const users = await prisma.user.findMany({ take: 5, orderBy: { id: "asc" } });
+  const games = await prisma.game.findMany({ orderBy: { id: "asc" } });
+  const rels: { userId: number; gameId: number }[] = [];
+  // primeiros 3 usuarios → juegos 1-4
+  for (let i = 0; i < 3 && i < users.length; i++) {
+    for (let j = 0; j < 4 && j < games.length; j++) {
+      rels.push({ userId: users[i].id, gameId: games[j].id });
+    }
+  }
+  // usuario 4 → juegos 3-7
+  if (users[3]) {
+    for (let j = 2; j < 7 && j < games.length; j++) {
+      rels.push({ userId: users[3].id, gameId: games[j].id });
+    }
+  }
+  // usuario 5 → juegos 5, 6, 10
+  if (users[4]) {
+    for (const idx of [4, 5, 9]) {
+      if (idx < games.length) rels.push({ userId: users[4].id, gameId: games[idx].id });
+    }
+  }
+  for (const r of rels) {
+    await prisma.userGame.upsert({
+      where: { userId_gameId: { userId: r.userId, gameId: r.gameId } },
+      update: {},
+      create: r,
+    });
+  }
+
+  const [usersCount, gamesCount, relsCount] = await Promise.all([
     prisma.user.count(),
     prisma.game.count(),
+    prisma.userGame.count(),
   ]);
-  console.log(`Seed complete: ${usersCount} users, ${gamesCount} games`);
+  console.log(`Seed complete: ${usersCount} users, ${gamesCount} games, ${relsCount} user-game relations`);
 }
 
 main()
