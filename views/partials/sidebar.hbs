@@ -1,35 +1,70 @@
-<form method="GET" action="/games" class="sidebar-sticky">
-  <h6 class="text-uppercase text-secondary small fw-semibold mb-3">Filtros</h6>
-  
-  <div class="mb-4">
-    <label class="form-label small text-secondary">Plataforma</label>
-    <select name="platformId" class="form-select form-select-sm bg-dark text-light border-secondary">
-      <option value="">Todas</option>
-      {{#each platforms}}
-      <option value="{{this.id}}" {{#if (eq this.id ../filters.platformId)}}selected{{/if}}>{{this.name}}</option>
+<div style="max-height: calc(100vh - 100px); overflow-y: auto; padding-right: 10px;">
+  {{#if inactiveGames.length}}
+  <form method="POST" action="/games/reactivate" class="mb-4">
+    <h6 class="text-uppercase text-secondary small fw-semibold mb-3">
+      <i class="bi bi-archive me-1"></i>Juegos desactivados
+    </h6>
+    <div class="mb-3" style="max-height: 200px; overflow-y: auto;">
+      {{#each inactiveGames}}
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" name="gameIds" value="{{this.id}}" id="inactive-{{this.id}}">
+        <label class="form-check-label small text-secondary" for="inactive-{{this.id}}">
+          {{this.title}}
+        </label>
+      </div>
       {{/each}}
-    </select>
-  </div>
+    </div>
+    <button type="submit" class="btn btn-outline-success w-100 btn-sm">
+      <i class="bi bi-arrow-counterclockwise me-2"></i>Reactivar seleccionados
+    </button>
+  </form>
+  <hr class="border-secondary my-4">
+  {{/if}}
 
-  <div class="mb-4">
-    <label class="form-label small text-secondary">Género</label>
-    <select name="genreId" class="form-select form-select-sm bg-dark text-light border-secondary">
-      <option value="">Todos</option>
-      {{#each genres}}
-      <option value="{{this.id}}" {{#if (eq this.id ../filters.genreId)}}selected{{/if}}>{{this.name}}</option>
-      {{/each}}
-    </select>
-  </div>
+  <form method="GET" action="/games" class="sidebar-sticky">
+    <h6 class="text-uppercase text-secondary small fw-semibold mb-3">Filtros</h6>
+    
+    <div class="mb-4">
+      <label class="form-label small text-secondary">Plataforma</label>
+      <select name="platformId" class="form-select form-select-sm bg-dark text-light border-secondary">
+        <option value="">Todas</option>
+        {{#each platforms}}
+        <option value="{{this.id}}" {{#if (eq this.id ../filters.platformId)}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+      </select>
+    </div>
 
-  <div class="mb-4">
-    <label class="form-label small text-secondary">Precio máximo: $<span id="maxPriceValue">{{filters.maxPrice}}</span></label>
-    <input type="range" id="maxPriceRange" name="maxPrice" class="form-range" min="0" max="{{catalogMaxPrice}}" value="{{filters.maxPrice}}">
-  </div>
+    <div class="mb-4">
+      <label class="form-label small text-secondary">Género</label>
+      <select name="genreId" class="form-select form-select-sm bg-dark text-light border-secondary">
+        <option value="">Todos</option>
+        {{#each genres}}
+        <option value="{{this.id}}" {{#if (eq this.id ../filters.genreId)}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+      </select>
+    </div>
 
-  <button type="submit" class="btn btn-danger w-100 btn-sm">
-    <i class="bi bi-funnel me-2"></i>Aplicar filtros
-  </button>
-</form>
+    <div class="mb-4">
+      <label class="form-label small text-secondary">Precio máximo: $<span id="maxPriceValue">{{filters.maxPrice}}</span></label>
+      <input type="range" id="maxPriceRange" name="maxPrice" class="form-range" min="0" max="{{catalogMaxPrice}}" value="{{filters.maxPrice}}">
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label small text-secondary">Ordenar por</label>
+      <select name="sort" class="form-select form-select-sm bg-dark text-light border-secondary">
+        <option value="">Sin ordenar</option>
+        <option value="title-asc" {{#if (eq filters.sort "title-asc")}}selected{{/if}}>Título (A-Z)</option>
+        <option value="title-desc" {{#if (eq filters.sort "title-desc")}}selected{{/if}}>Título (Z-A)</option>
+        <option value="price-asc" {{#if (eq filters.sort "price-asc")}}selected{{/if}}>Precio (menor a mayor)</option>
+        <option value="price-desc" {{#if (eq filters.sort "price-desc")}}selected{{/if}}>Precio (mayor a menor)</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-danger w-100 btn-sm">
+      <i class="bi bi-funnel me-2"></i>Aplicar filtros
+    </button>
+  </form>
+</div>
 
 <script>
   document.getElementById('maxPriceRange').addEventListener('input', function(e) {
