@@ -1,0 +1,21 @@
+title,description,genre,platform,developer,publisher,releaseYear,price,active
+Elden Ring,RPG de mundo abierto con alta dificultad.,RPG,PC,FromSoftware,Bandai Namco,2022,49.99,true
+Cyberpunk 2077,Aventura futurista en Night City.,RPG,PC,CD Projekt RED,CD Projekt,2020,39.99,true
+Baldur's Gate 3,RPG basado en Dungeons and Dragons.,RPG,PC,Larian Studios,Larian Studios,2023,59.99,true
+The Witcher 3,Caza monstruos en un enorme mundo abierto.,RPG,PC,CD Projekt RED,CD Projekt,2015,29.99,true
+Hades,Roguelike de acción inspirado en la mitología griega.,Roguelike,PC,Supergiant Games,Supergiant Games,2020,19.99,true
+Hollow Knight,Metroidvania ambientado en Hallownest.,Metroidvania,PC,Team Cherry,Team Cherry,2017,14.99,true
+Celeste,Plataformas con una historia emocional.,Platformer,PC,Extremely OK Games,Matt Makes Games,2018,19.99,true
+Portal 2,Puzles utilizando portales.,Puzzle,PC,Valve,Valve,2011,9.99,true
+Half-Life 2,Shooter clásico en primera persona.,Shooter,PC,Valve,Valve,2004,9.99,true
+DOOM Eternal,Shooter frenético contra demonios.,Shooter,PC,id Software,Bethesda Softworks,2020,39.99,true
+Red Dead Redemption 2,Aventura en el lejano oeste.,Adventure,PC,Rockstar Games,Rockstar Games,2018,49.99,true
+Minecraft,Construcción y supervivencia por bloques.,Sandbox,PC,Mojang Studios,Xbox Game Studios,2011,26.95,true
+Terraria,Aventura sandbox en dos dimensiones.,Sandbox,PC,Re-Logic,505 Games,2011,9.99,true
+Stardew Valley,Simulador de granja y vida rural.,Simulation,PC,ConcernedApe,ConcernedApe,2016,14.99,true
+Factorio,Automatización y gestión de fábricas.,Simulation,PC,Wube Software,Wube Software,2020,35.00,true
+Resident Evil 4,Survival horror de acción.,Horror,PlayStation 5,Capcom,Capcom,2023,59.99,true
+Sekiro: Shadows Die Twice,Aventura de acción ambientada en Japón feudal.,Action,PC,FromSoftware,Activision,2019,49.99,true
+Control,Aventura sobrenatural con poderes telequinéticos.,Action,PC,Remedy Entertainment,505 Games,2019,29.99,true
+Forza Horizon 5,Conducción de mundo abierto en México.,Racing,Xbox Series X/S,Playground Games,Xbox Game Studios,2021,59.99,true
+EA Sports FC 26,Simulador de fútbol.,Sports,PlayStation 5,EA Vancouver,Electronic Arts,2025,69.99,true
