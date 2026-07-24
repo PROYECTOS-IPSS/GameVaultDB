@@ -3,9 +3,14 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const GameModel = {
-  findAll() {
+  findAll(filters?: { platformId?: number; genreId?: number; maxPrice?: number }) {
+    const where: Record<string, unknown> = { active: true };
+    if (filters?.platformId) where.platformId = Number(filters.platformId);
+    if (filters?.genreId) where.genreId = Number(filters.genreId);
+    if (filters?.maxPrice) where.price = { lte: Number(filters.maxPrice) };
+
     return prisma.game.findMany({
-      where: { active: true },
+      where,
       include: { genre: true, platform: true, publisher: true, developer: true },
       orderBy: { createdAt: 'desc' },
     });
@@ -41,5 +46,13 @@ export const GameModel = {
       prisma.publisher.findMany({ orderBy: { name: 'asc' } }),
       prisma.developer.findMany({ orderBy: { name: 'asc' } }),
     ]);
+  },
+
+  async getMaxPrice() {
+    const result = await prisma.game.aggregate({
+      where: { active: true },
+      _max: { price: true },
+    });
+    return result._max.price ?? 100;
   },
 };

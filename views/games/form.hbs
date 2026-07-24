@@ -9,38 +9,48 @@
           </ol>
         </nav>
 
+        {{#if errors}}
+        <div class="alert alert-danger bg-dark border-danger mb-4">
+          <h5 class="alert-heading text-danger mb-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>Errores de validación
+          </h5>
+          <ul class="mb-0">
+            {{#each errors}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+        {{/if}}
+
         <div class="card bg-dark border-secondary">
           <div class="card-body p-4">
             <h2 class="mb-4">{{#if game}}Editar juego{{else}}Nuevo juego{{/if}}</h2>
             
-            <form action="/games{{#if game}}/{{game.id}}{{/if}}" method="POST">
-              {{#if game}}
-              <input type="hidden" name="_method" value="PUT">
-              {{/if}}
+            <form action="/games{{#if game}}/{{game.id}}?_method=PUT{{/if}}" method="POST">
 
               <div class="row g-3">
                 <div class="col-12">
                   <label class="form-label">Título</label>
                   <input type="text" name="title" class="form-control bg-dark text-light border-secondary" 
-                         value="{{game.title}}" required>
+                         value="{{#if formData}}{{formData.title}}{{else}}{{game.title}}{{/if}}" required>
                 </div>
 
                 <div class="col-12">
                   <label class="form-label">Descripción</label>
                   <textarea name="description" class="form-control bg-dark text-light border-secondary" 
-                            rows="3">{{game.description}}</textarea>
+                            rows="3">{{#if formData}}{{formData.description}}{{else}}{{game.description}}{{/if}}</textarea>
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label">Año de lanzamiento</label>
                   <input type="number" name="releaseYear" class="form-control bg-dark text-light border-secondary" 
-                         value="{{game.releaseYear}}" required>
+                         value="{{#if formData}}{{formData.releaseYear}}{{else}}{{game.releaseYear}}{{/if}}" required>
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label">Precio</label>
-                  <input type="number" step="0.01" name="price" class="form-control bg-dark text-light border-secondary" 
-                         value="{{game.price}}" required>
+                  <input type="number" step="0.01" name="price" id="gamePrice" class="form-control bg-dark text-light border-secondary" 
+                         value="{{#if formData}}{{formData.price}}{{else}}{{game.price}}{{/if}}" required>
                 </div>
 
                 <div class="col-md-6">
@@ -48,7 +58,8 @@
                   <select name="genreId" class="form-select bg-dark text-light border-secondary" required>
                     <option value="">Seleccionar...</option>
                     {{#each genres}}
-                    <option value="{{this.id}}" {{#if (eq this.id ../game.genreId)}}selected{{/if}}>{{this.name}}</option>
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.genreId)}}selected{{/if}}
+                      {{#if ../formData}}{{#if (eq this.id ../formData.genreId)}}selected{{/if}}{{/if}}>{{this.name}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -58,7 +69,8 @@
                   <select name="platformId" class="form-select bg-dark text-light border-secondary" required>
                     <option value="">Seleccionar...</option>
                     {{#each platforms}}
-                    <option value="{{this.id}}" {{#if (eq this.id ../game.platformId)}}selected{{/if}}>{{this.name}}</option>
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.platformId)}}selected{{/if}}
+                      {{#if ../formData}}{{#if (eq this.id ../formData.platformId)}}selected{{/if}}{{/if}}>{{this.name}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -68,7 +80,8 @@
                   <select name="publisherId" class="form-select bg-dark text-light border-secondary" required>
                     <option value="">Seleccionar...</option>
                     {{#each publishers}}
-                    <option value="{{this.id}}" {{#if (eq this.id ../game.publisherId)}}selected{{/if}}>{{this.name}}</option>
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.publisherId)}}selected{{/if}}
+                      {{#if ../formData}}{{#if (eq this.id ../formData.publisherId)}}selected{{/if}}{{/if}}>{{this.name}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -78,7 +91,8 @@
                   <select name="developerId" class="form-select bg-dark text-light border-secondary" required>
                     <option value="">Seleccionar...</option>
                     {{#each developers}}
-                    <option value="{{this.id}}" {{#if (eq this.id ../game.developerId)}}selected{{/if}}>{{this.name}}</option>
+                    <option value="{{this.id}}" {{#if (eq this.id ../game.developerId)}}selected{{/if}}
+                      {{#if ../formData}}{{#if (eq this.id ../formData.developerId)}}selected{{/if}}{{/if}}>{{this.name}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -97,3 +111,23 @@
     </div>
   </div>
 </section>
+
+<script>
+  // Actualizar maxPrice del sidebar si el precio del juego es mayor
+  const gamePriceInput = document.getElementById('gamePrice');
+  const maxPriceRange = document.getElementById('maxPriceRange');
+  const maxPriceValue = document.getElementById('maxPriceValue');
+  
+  if (gamePriceInput && maxPriceRange && maxPriceValue) {
+    gamePriceInput.addEventListener('input', function() {
+      const price = parseFloat(this.value);
+      const currentMax = parseFloat(maxPriceRange.max);
+      
+      if (price > currentMax) {
+        maxPriceRange.max = Math.ceil(price);
+        maxPriceRange.value = Math.ceil(price);
+        maxPriceValue.textContent = Math.ceil(price);
+      }
+    });
+  }
+</script>
