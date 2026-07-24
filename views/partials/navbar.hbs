@@ -15,9 +15,16 @@
           <a class="nav-link {{#if isGames}}active{{/if}}" href="/games">Juegos</a>
         </li>
       </ul>
-      <div class="d-flex gap-2">
+      <div class="d-flex align-items-center gap-2">
+        {{#if user}}
+        <span class="text-secondary small me-1">Hola, {{user.name}}</span>
+        <form action="/auth/logout" method="POST" class="m-0">
+          <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+        </form>
+        {{else}}
         <a href="/auth/login" class="btn btn-outline-light btn-sm">Ingresar</a>
         <a href="/auth/register" class="btn btn-danger btn-sm">Registrarse</a>
+        {{/if}}
       </div>
     </div>
   </div>

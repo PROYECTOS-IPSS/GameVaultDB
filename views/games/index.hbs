@@ -13,9 +13,11 @@
             <h2 class="mb-0">Todos los juegos</h2>
             <p class="text-secondary mb-0">{{games.length}} juegos disponibles</p>
           </div>
+          {{#if user}}
           <a href="/games/new" class="btn btn-danger">
             <i class="bi bi-plus-lg me-2"></i>Añadir juego
           </a>
+          {{/if}}
         </div>
 
         <div class="row g-4">
