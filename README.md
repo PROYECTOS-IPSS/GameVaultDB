@@ -37,10 +37,10 @@ cp .env-example .env
 
 Variables disponibles:
 
-| Variable       | Descripción              | Default                    |
-|----------------|--------------------------|----------------------------|
-| `PORT`         | Puerto del servidor      | `3000`                     |
-| `DATABASE_URL` | URL de SQLite            | `file:./prisma/dev.db`     |
+| Variable       | Descripción         | Default                |
+| -------------- | ------------------- | ---------------------- |
+| `PORT`         | Puerto del servidor | `3000`                 |
+| `DATABASE_URL` | URL de SQLite       | `file:./prisma/dev.db` |
 
 ## Instalación y ejecución (sin Docker)
 
@@ -99,6 +99,7 @@ docker compose up --build -d
 ```
 
 Esto:
+
 - Construye la imagen multi-stage (build TS → prod)
 - Aplica migraciones con `prisma migrate deploy`
 - Inicia el servidor en puerto 3000
@@ -183,27 +184,27 @@ HTTP Request → Routes → Controllers → Models → Prisma ORM → SQLite
 
 ## Modelos de datos
 
-| Modelo       | Descripción                          |
-|--------------|--------------------------------------|
-| User         | Usuarios del sistema                 |
-| Game         | Videojuegos                          |
-| Genre        | Géneros (RPG, Shooter, etc.)         |
-| Platform     | Plataformas (PC, PS5, etc.)          |
-| Publisher    | Editoriales                          |
-| Developer    | Desarrolladores                      |
-| UserGame     | Relación usuario-juego (colección)   |
+| Modelo    | Descripción                        |
+| --------- | ---------------------------------- |
+| User      | Usuarios del sistema               |
+| Game      | Videojuegos                        |
+| Genre     | Géneros (RPG, Shooter, etc.)       |
+| Platform  | Plataformas (PC, PS5, etc.)        |
+| Publisher | Editoriales                        |
+| Developer | Desarrolladores                    |
+| UserGame  | Relación usuario-juego (colección) |
 
 ## Scripts
 
-| Comando                 | Descripción                           |
-|-------------------------|---------------------------------------|
-| `npm run dev`           | Iniciar servidor en desarrollo        |
-| `npm run build`         | Compilar TypeScript                   |
-| `npm start`             | Ejecutar compilación                  |
-| `npm run seed`          | Poblar base de datos                  |
-| `npx prisma studio`     | Explorar base de datos (GUI)          |
-| `npx prisma migrate dev`| Crear migración (desarrollo)          |
-| `npx prisma migrate deploy` | Aplicar migraciones (producción)  |
+| Comando                     | Descripción                      |
+| --------------------------- | -------------------------------- |
+| `npm run dev`               | Iniciar servidor en desarrollo   |
+| `npm run build`             | Compilar TypeScript              |
+| `npm start`                 | Ejecutar compilación             |
+| `npm run seed`              | Poblar base de datos             |
+| `npx prisma studio`         | Explorar base de datos (GUI)     |
+| `npx prisma migrate dev`    | Crear migración (desarrollo)     |
+| `npx prisma migrate deploy` | Aplicar migraciones (producción) |
 
 ## Seguridad
 
@@ -212,21 +213,3 @@ HTTP Request → Routes → Controllers → Models → Prisma ORM → SQLite
 - Middleware de autenticación protege rutas privadas
 - Validación de entradas con Zod en todos los endpoints
 - Soft delete: registros no se eliminan físicamente (campo `deletedAt`)
-
-## Git
-
-Las funcionalidades se desarrollan en ramas feature:
-
-```
-feat/auth
-feat/games
-feat/collection
-feat/docker
-fix/login
-```
-
-Commits pequeños y descriptivos. Nunca trabajar directamente sobre `main`.
-
-## Licencia
-
-ISC
