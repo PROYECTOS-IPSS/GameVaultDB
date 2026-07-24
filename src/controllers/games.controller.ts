@@ -1,13 +1,25 @@
 import { Request, Response } from 'express';
 import { GameModel } from '../models/games.model';
+import { gameSchema } from '../schemas/game.schema';
 
 export const GameController = {
-  async index(_req: Request, res: Response) {
+  async index(req: Request, res: Response) {
     try {
-      const [games, [genres, platforms, publishers, developers]] = await Promise.all([
-        GameModel.findAll(),
+      const { platformId, genreId, maxPrice } = req.query;
+      const filters = {
+        platformId: platformId ? Number(platformId) : undefined,
+        genreId: genreId ? Number(genreId) : undefined,
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      };
+
+      const [games, [genres, platforms, publishers, developers], catalogMaxPrice] = await Promise.all([
+        GameModel.findAll(filters),
         GameModel.getFilterData(),
+        GameModel.getMaxPrice(),
       ]);
+      
+      const selectedMaxPrice = filters.maxPrice || catalogMaxPrice;
+      
       res.render('games/index', {
         isGames: true,
         games,
@@ -15,6 +27,12 @@ export const GameController = {
         platforms,
         publishers,
         developers,
+        catalogMaxPrice,
+        filters: {
+          platformId: filters.platformId || '',
+          genreId: filters.genreId || '',
+          maxPrice: selectedMaxPrice,
+        },
       });
     } catch (error) {
       console.error(error);
@@ -33,11 +51,19 @@ export const GameController = {
       res.status(500).render('500');
     }
   },
-
   async new(_req: Request, res: Response) {
     try {
-      const [genres, platforms, publishers, developers] = await GameModel.getFilterData();
-      res.render('games/form', { genres, platforms, publishers, developers });
+      const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+        GameModel.getFilterData(),
+        GameModel.getMaxPrice(),
+      ]);
+      res.render('games/form', { 
+        genres, 
+        platforms, 
+        publishers, 
+        developers,
+        maxPrice 
+      });
     } catch (error) {
       console.error(error);
       res.status(500).render('500');
@@ -46,43 +72,38 @@ export const GameController = {
 
   async create(req: Request, res: Response) {
     try {
-      const {
-        title,
-        description,
-        releaseYear,
-        price,
-        genreId,
-        platformId,
-        publisherId,
-        developerId,
-      } = req.body;
+      const data = {
+        ...req.body,
+        releaseYear: Number(req.body.releaseYear),
+        price: Number(req.body.price),
+        genreId: Number(req.body.genreId),
+        platformId: Number(req.body.platformId),
+        publisherId: Number(req.body.publisherId),
+        developerId: Number(req.body.developerId),
+      };
 
-      if (
-        !title ||
-        !releaseYear ||
-        !price ||
-        !genreId ||
-        !platformId ||
-        !publisherId ||
-        !developerId
-      ) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+      const validation = gameSchema.safeParse(data);
+      if (!validation.success) {
+        const errors = validation.error.issues.map((e: { message: string }) => e.message);
+        const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+          GameModel.getFilterData(),
+          GameModel.getMaxPrice(),
+        ]);
+        return res.status(400).render('games/form', { 
+          errors, 
+          formData: data,
+          genres, 
+          platforms, 
+          publishers, 
+          developers,
+          maxPrice 
+        });
       }
 
-      const existing = await GameModel.findByTitle(title);
+      const existing = await GameModel.findByTitle(validation.data.title);
       if (existing) return res.status(409).json({ error: 'El título del juego ya existe' });
 
-      await GameModel.create({
-        title,
-        description,
-        releaseYear: Number(releaseYear),
-        price: Number(price),
-        genreId: Number(genreId),
-        platformId: Number(platformId),
-        publisherId: Number(publisherId),
-        developerId: Number(developerId),
-      });
-
+      await GameModel.create(validation.data);
       res.redirect('/games');
     } catch (error) {
       console.error(error);
@@ -96,8 +117,11 @@ export const GameController = {
       const game = await GameModel.findById(id);
       if (!game) return res.status(404).render('404');
 
-      const [genres, platforms, publishers, developers] = await GameModel.getFilterData();
-      res.render('games/form', { game, genres, platforms, publishers, developers });
+      const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+        GameModel.getFilterData(),
+        GameModel.getMaxPrice(),
+      ]);
+      res.render('games/form', { game, genres, platforms, publishers, developers, maxPrice });
     } catch (error) {
       console.error(error);
       res.status(500).render('500');
@@ -107,36 +131,44 @@ export const GameController = {
   async update(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
-      const {
-        title,
-        description,
-        releaseYear,
-        price,
-        genreId,
-        platformId,
-        publisherId,
-        developerId,
-      } = req.body;
-
       const existing = await GameModel.findById(id);
       if (!existing) return res.status(404).render('404');
 
-      if (title && title !== existing.title) {
-        const duplicate = await GameModel.findByTitle(title);
+      const data = {
+        ...req.body,
+        releaseYear: Number(req.body.releaseYear),
+        price: Number(req.body.price),
+        genreId: Number(req.body.genreId),
+        platformId: Number(req.body.platformId),
+        publisherId: Number(req.body.publisherId),
+        developerId: Number(req.body.developerId),
+      };
+
+      const validation = gameSchema.safeParse(data);
+      if (!validation.success) {
+        const errors = validation.error.issues.map((e: { message: string }) => e.message);
+        const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+          GameModel.getFilterData(),
+          GameModel.getMaxPrice(),
+        ]);
+        return res.status(400).render('games/form', { 
+          errors, 
+          game: { id, ...data },
+          formData: data,
+          genres, 
+          platforms, 
+          publishers, 
+          developers,
+          maxPrice 
+        });
+      }
+
+      if (validation.data.title !== existing.title) {
+        const duplicate = await GameModel.findByTitle(validation.data.title);
         if (duplicate) return res.status(409).json({ error: 'El título del juego ya existe' });
       }
 
-      const data: Record<string, unknown> = {};
-      if (title !== undefined) data.title = title;
-      if (description !== undefined) data.description = description;
-      if (releaseYear !== undefined) data.releaseYear = Number(releaseYear);
-      if (price !== undefined) data.price = Number(price);
-      if (genreId !== undefined) data.genreId = Number(genreId);
-      if (platformId !== undefined) data.platformId = Number(platformId);
-      if (publisherId !== undefined) data.publisherId = Number(publisherId);
-      if (developerId !== undefined) data.developerId = Number(developerId);
-
-      await GameModel.update(id, data);
+      await GameModel.update(id, validation.data);
       res.redirect(`/games/${id}`);
     } catch (error) {
       console.error(error);
