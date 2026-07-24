@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { GameModel } from "../models/games.model";
+import { Request, Response } from 'express';
+import { GameModel } from '../models/games.model';
 
 export const GameController = {
   async index(_req: Request, res: Response) {
@@ -8,17 +8,17 @@ export const GameController = {
         GameModel.findAll(),
         GameModel.getFilterData(),
       ]);
-      res.render("games/index", { 
-        isGames: true, 
-        games, 
-        genres, 
-        platforms, 
-        publishers, 
+      res.render('games/index', {
+        isGames: true,
+        games,
+        genres,
+        platforms,
+        publishers,
         developers,
       });
     } catch (error) {
       console.error(error);
-      res.status(500).render("500");
+      res.status(500).render('500');
     }
   },
 
@@ -26,34 +26,51 @@ export const GameController = {
     try {
       const id = Number(req.params.id);
       const game = await GameModel.findById(id);
-      if (!game) return res.status(404).render("404");
-      res.render("games/show", { game });
+      if (!game) return res.status(404).render('404');
+      res.render('games/show', { game });
     } catch (error) {
       console.error(error);
-      res.status(500).render("500");
+      res.status(500).render('500');
     }
   },
 
   async new(_req: Request, res: Response) {
     try {
       const [genres, platforms, publishers, developers] = await GameModel.getFilterData();
-      res.render("games/form", { genres, platforms, publishers, developers });
+      res.render('games/form', { genres, platforms, publishers, developers });
     } catch (error) {
       console.error(error);
-      res.status(500).render("500");
+      res.status(500).render('500');
     }
   },
 
   async create(req: Request, res: Response) {
     try {
-      const { title, description, releaseYear, price, genreId, platformId, publisherId, developerId } = req.body;
+      const {
+        title,
+        description,
+        releaseYear,
+        price,
+        genreId,
+        platformId,
+        publisherId,
+        developerId,
+      } = req.body;
 
-      if (!title || !releaseYear || !price || !genreId || !platformId || !publisherId || !developerId) {
-        return res.status(400).json({ error: "Faltan campos obligatorios" });
+      if (
+        !title ||
+        !releaseYear ||
+        !price ||
+        !genreId ||
+        !platformId ||
+        !publisherId ||
+        !developerId
+      ) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
       }
 
       const existing = await GameModel.findByTitle(title);
-      if (existing) return res.status(409).json({ error: "El título del juego ya existe" });
+      if (existing) return res.status(409).json({ error: 'El título del juego ya existe' });
 
       await GameModel.create({
         title,
@@ -66,10 +83,10 @@ export const GameController = {
         developerId: Number(developerId),
       });
 
-      res.redirect("/games");
+      res.redirect('/games');
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Error al crear el juego" });
+      res.status(500).json({ error: 'Error al crear el juego' });
     }
   },
 
@@ -77,27 +94,36 @@ export const GameController = {
     try {
       const id = Number(req.params.id);
       const game = await GameModel.findById(id);
-      if (!game) return res.status(404).render("404");
-      
+      if (!game) return res.status(404).render('404');
+
       const [genres, platforms, publishers, developers] = await GameModel.getFilterData();
-      res.render("games/form", { game, genres, platforms, publishers, developers });
+      res.render('games/form', { game, genres, platforms, publishers, developers });
     } catch (error) {
       console.error(error);
-      res.status(500).render("500");
+      res.status(500).render('500');
     }
   },
 
   async update(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
-      const { title, description, releaseYear, price, genreId, platformId, publisherId, developerId } = req.body;
+      const {
+        title,
+        description,
+        releaseYear,
+        price,
+        genreId,
+        platformId,
+        publisherId,
+        developerId,
+      } = req.body;
 
       const existing = await GameModel.findById(id);
-      if (!existing) return res.status(404).render("404");
+      if (!existing) return res.status(404).render('404');
 
       if (title && title !== existing.title) {
         const duplicate = await GameModel.findByTitle(title);
-        if (duplicate) return res.status(409).json({ error: "El título del juego ya existe" });
+        if (duplicate) return res.status(409).json({ error: 'El título del juego ya existe' });
       }
 
       const data: Record<string, unknown> = {};
@@ -114,7 +140,7 @@ export const GameController = {
       res.redirect(`/games/${id}`);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Error al actualizar el juego" });
+      res.status(500).json({ error: 'Error al actualizar el juego' });
     }
   },
 
@@ -122,10 +148,10 @@ export const GameController = {
     try {
       const id = Number(req.params.id);
       await GameModel.softDelete(id);
-      res.redirect("/games");
+      res.redirect('/games');
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Error al eliminar el juego" });
+      res.status(500).json({ error: 'Error al eliminar el juego' });
     }
   },
 };

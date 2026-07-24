@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -7,7 +7,7 @@ export const HomeModel = {
     return prisma.game.findMany({
       where: { active: true },
       include: { genre: true, platform: true },
-      orderBy: { releaseYear: "desc" },
+      orderBy: { releaseYear: 'desc' },
       take: limit,
     });
   },
