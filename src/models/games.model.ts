@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -7,7 +7,7 @@ export const GameModel = {
     return prisma.game.findMany({
       where: { active: true },
       include: { genre: true, platform: true, publisher: true, developer: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
   },
 
@@ -36,10 +36,10 @@ export const GameModel = {
 
   getFilterData() {
     return Promise.all([
-      prisma.genre.findMany({ orderBy: { name: "asc" } }),
-      prisma.platform.findMany({ orderBy: { name: "asc" } }),
-      prisma.publisher.findMany({ orderBy: { name: "asc" } }),
-      prisma.developer.findMany({ orderBy: { name: "asc" } }),
+      prisma.genre.findMany({ orderBy: { name: 'asc' } }),
+      prisma.platform.findMany({ orderBy: { name: 'asc' } }),
+      prisma.publisher.findMany({ orderBy: { name: 'asc' } }),
+      prisma.developer.findMany({ orderBy: { name: 'asc' } }),
     ]);
   },
 };
