@@ -1,0 +1,27 @@
+{{> hero}}
+
+<section class="py-5 bg-dark-subtle">
+  <div class="container">
+    <div class="row justify-content-between align-items-center mb-4">
+      <div class="col">
+        <h2 class="mb-0">Juegos destacados</h2>
+        <p class="text-secondary mb-0">Los más recientes de la colección</p>
+      </div>
+      <div class="col-auto">
+        <a href="/games" class="btn btn-outline-light">Ver todos <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {{#each featured}}
+      <div class="col-md-6 col-lg-4">
+        {{> game-card this}}
+      </div>
+      {{else}}
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-joystick display-1 text-secondary"></i>
+        <p class="text-secondary mt-3">No hay juegos disponibles aún</p>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>

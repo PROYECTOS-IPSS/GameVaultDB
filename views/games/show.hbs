@@ -1,0 +1,63 @@
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/games" class="text-decoration-none">Juegos</a></li>
+            <li class="breadcrumb-item active">{{game.title}}</li>
+          </ol>
+        </nav>
+
+        <div class="card bg-dark border-secondary">
+          <div class="card-body p-4">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="badge bg-danger text-uppercase">{{game.genre.name}}</span>
+                  <span class="badge bg-secondary text-uppercase">{{game.platform.name}}</span>
+                </div>
+                <h1 class="display-5 fw-bold mb-3">{{game.title}}</h1>
+                <p class="lead text-secondary mb-4">{{game.description}}</p>
+                
+                <div class="row g-3 mb-4">
+                  <div class="col-6">
+                    <small class="text-secondary d-block">Año de lanzamiento</small>
+                    <span class="fw-semibold">{{game.releaseYear}}</span>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary d-block">Precio</small>
+                    <span class="h4 text-danger mb-0">${{game.price}}</span>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary d-block">Editorial</small>
+                    <span class="fw-semibold">{{game.publisher.name}}</span>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary d-block">Desarrollador</small>
+                    <span class="fw-semibold">{{game.developer.name}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-danger">
+                    <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                  </button>
+                  <a href="/games/{{game.id}}/edit" class="btn btn-outline-light">
+                    <i class="bi bi-pencil me-2"></i>Editar
+                  </a>
+                  <form action="/games/{{game.id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn btn-outline-danger w-100">
+                      <i class="bi bi-trash me-2"></i>Eliminar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
