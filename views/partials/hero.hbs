@@ -1,0 +1,33 @@
+<section class="hero py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <p class="text-danger text-uppercase fw-semibold small mb-3">Tu biblioteca de juegos</p>
+        <h1 class="display-3 fw-bold mb-4">Organiza y descubre tus juegos favoritos</h1>
+        <p class="lead text-secondary mb-4">Gestiona tu colección, descubre nuevos títulos y conecta con otros gamers.</p>
+        <div class="d-flex gap-3">
+          <a href="/games" class="btn btn-danger btn-lg px-4">
+            <i class="bi bi-collection me-2"></i>Explorar juegos
+          </a>
+          <a href="/auth/register" class="btn btn-outline-light btn-lg px-4">Crear cuenta</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-stats d-flex gap-4">
+          <div class="stat-card">
+            <div class="stat-number">{{stats.games}}</div>
+            <div class="stat-label">Juegos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{stats.platforms}}</div>
+            <div class="stat-label">Plataformas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{stats.genres}}</div>
+            <div class="stat-label">Géneros</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
