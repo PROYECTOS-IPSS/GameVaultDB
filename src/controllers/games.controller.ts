@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { GameModel } from '../models/games.model';
+import { CollectionModel } from '../models/collection.model';
 import { gameSchema } from '../schemas/game.schema';
-
 export const GameController = {
   async index(req: Request, res: Response) {
     try {
@@ -25,15 +25,26 @@ export const GameController = {
       
       const selectedMaxPrice = filters.maxPrice || catalogMaxPrice;
       
+      let userGameIds: number[] = [];
+      if (req.session.userId) {
+        userGameIds = await CollectionModel.getUserGameIds(req.session.userId);
+      }
+
+      const gamesWithCollection = games.map((game) => ({
+        ...game,
+        isInCollection: userGameIds.includes(game.id),
+      }));
+
       res.render('games/index', {
         isGames: true,
-        games,
+        games: gamesWithCollection,
         genres,
         platforms,
         publishers,
         developers,
         catalogMaxPrice,
         inactiveGames,
+        userGameIds,
         filters: {
           platformId: filters.platformId || '',
           genreId: filters.genreId || '',
@@ -46,13 +57,18 @@ export const GameController = {
       res.status(500).render('500');
     }
   },
-
   async show(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
       const game = await GameModel.findById(id);
       if (!game) return res.status(404).render('404');
-      res.render('games/show', { game });
+
+      let isInCollection = false;
+      if (req.session.userId) {
+        isInCollection = await CollectionModel.isInCollection(req.session.userId, id);
+      }
+
+      res.render('games/show', { game, isInCollection });
     } catch (error) {
       console.error(error);
       res.status(500).render('500');

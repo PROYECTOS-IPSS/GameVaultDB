@@ -14,6 +14,11 @@
         <li class="nav-item">
           <a class="nav-link {{#if isGames}}active{{/if}}" href="/games">Juegos</a>
         </li>
+        {{#if user}}
+        <li class="nav-item">
+          <a class="nav-link {{#if isCollection}}active{{/if}}" href="/collection">Mi Colección</a>
+        </li>
+        {{/if}}
       </ul>
       <div class="d-flex align-items-center gap-2">
         {{#if user}}
