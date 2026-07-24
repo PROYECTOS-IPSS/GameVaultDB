@@ -5,18 +5,23 @@ import { gameSchema } from '../schemas/game.schema';
 export const GameController = {
   async index(req: Request, res: Response) {
     try {
-      const { platformId, genreId, maxPrice } = req.query;
+      const { platformId, genreId, maxPrice, sort } = req.query;
       const filters = {
         platformId: platformId ? Number(platformId) : undefined,
         genreId: genreId ? Number(genreId) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
       };
 
-      const [games, [genres, platforms, publishers, developers], catalogMaxPrice] = await Promise.all([
-        GameModel.findAll(filters),
-        GameModel.getFilterData(),
-        GameModel.getMaxPrice(),
-      ]);
+      const sortValue = sort ? String(sort) : '';
+      const [sortField, sortDir] = sortValue.includes('-') ? sortValue.split('-') : ['', ''];
+
+      const [games, [genres, platforms, publishers, developers], catalogMaxPrice, inactiveGames] =
+        await Promise.all([
+          GameModel.findAll(filters, sortField, sortDir),
+          GameModel.getFilterData(),
+          GameModel.getMaxPrice(),
+          GameModel.findInactive(),
+        ]);
       
       const selectedMaxPrice = filters.maxPrice || catalogMaxPrice;
       
@@ -28,10 +33,12 @@ export const GameController = {
         publishers,
         developers,
         catalogMaxPrice,
+        inactiveGames,
         filters: {
           platformId: filters.platformId || '',
           genreId: filters.genreId || '',
           maxPrice: selectedMaxPrice,
+          sort: sortValue,
         },
       });
     } catch (error) {
@@ -101,7 +108,17 @@ export const GameController = {
       }
 
       const existing = await GameModel.findByTitle(validation.data.title);
-      if (existing) return res.status(409).json({ error: 'El título del juego ya existe' });
+      if (existing) {
+        const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+          GameModel.getFilterData(),
+          GameModel.getMaxPrice(),
+        ]);
+        return res.status(400).render('games/form', {
+          errors: ['El título del juego ya existe'],
+          formData: validation.data,
+          genres, platforms, publishers, developers, maxPrice,
+        });
+      }
 
       await GameModel.create(validation.data);
       res.redirect('/games');
@@ -165,7 +182,18 @@ export const GameController = {
 
       if (validation.data.title !== existing.title) {
         const duplicate = await GameModel.findByTitle(validation.data.title);
-        if (duplicate) return res.status(409).json({ error: 'El título del juego ya existe' });
+        if (duplicate) {
+          const [[genres, platforms, publishers, developers], maxPrice] = await Promise.all([
+            GameModel.getFilterData(),
+            GameModel.getMaxPrice(),
+          ]);
+          return res.status(400).render('games/form', {
+            errors: ['El título del juego ya existe'],
+            game: { id, ...validation.data },
+            formData: validation.data,
+            genres, platforms, publishers, developers, maxPrice,
+          });
+        }
       }
 
       await GameModel.update(id, validation.data);
@@ -184,6 +212,26 @@ export const GameController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error al eliminar el juego' });
+    }
+  },
+
+  async reactivate(req: Request, res: Response) {
+    try {
+      const ids = Array.isArray(req.body.gameIds)
+        ? req.body.gameIds.map(Number)
+        : req.body.gameIds
+          ? [Number(req.body.gameIds)]
+          : [];
+
+      if (ids.length === 0) {
+        return res.redirect('/games');
+      }
+
+      await GameModel.reactivateMany(ids);
+      res.redirect('/games');
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al reactivar los juegos' });
     }
   },
 };

@@ -8,6 +8,7 @@ router.get('/new', GameController.new);
 router.get('/:id', GameController.show);
 router.get('/:id/edit', GameController.edit);
 router.post('/', GameController.create);
+router.post('/reactivate', GameController.reactivate);
 router.put('/:id', GameController.update);
 router.delete('/:id', GameController.delete);
 

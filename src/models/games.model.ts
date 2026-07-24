@@ -3,16 +3,25 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const GameModel = {
-  findAll(filters?: { platformId?: number; genreId?: number; maxPrice?: number }) {
+  findAll(
+    filters?: { platformId?: number; genreId?: number; maxPrice?: number },
+    sortBy?: string,
+    sortOrder?: string,
+  ) {
     const where: Record<string, unknown> = { active: true };
     if (filters?.platformId) where.platformId = Number(filters.platformId);
     if (filters?.genreId) where.genreId = Number(filters.genreId);
     if (filters?.maxPrice) where.price = { lte: Number(filters.maxPrice) };
 
+    const orderBy: Record<string, string> =
+      (sortBy === 'title' || sortBy === 'price')
+        ? { [sortBy]: sortOrder === 'asc' ? 'asc' : 'desc' }
+        : { createdAt: 'desc' };
+
     return prisma.game.findMany({
       where,
       include: { genre: true, platform: true, publisher: true, developer: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy,
     });
   },
 
@@ -37,6 +46,21 @@ export const GameModel = {
 
   softDelete(id: number) {
     return prisma.game.update({ where: { id }, data: { active: false } });
+  },
+
+  findInactive() {
+    return prisma.game.findMany({
+      where: { active: false },
+      orderBy: { title: 'asc' },
+      select: { id: true, title: true },
+    });
+  },
+
+  reactivateMany(ids: number[]) {
+    return prisma.game.updateMany({
+      where: { id: { in: ids } },
+      data: { active: true },
+    });
   },
 
   getFilterData() {
