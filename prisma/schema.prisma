@@ -1,3 +1,73 @@
 generator client {
   provider = "prisma-client-js"
 }
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  nombre           String
+  apellido         String
+  segundoApellido  String
+  email            String   @unique
+  password         String
+  active           Boolean  @default(true)
+  createdAt DateTime  @default(now())
+  games     UserGame[]
+}
+
+model Genre {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  games Game[]
+}
+
+model Platform {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  games Game[]
+}
+
+model Publisher {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  games Game[]
+}
+
+model Developer {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  games Game[]
+}
+
+model Game {
+  id          Int       @id @default(autoincrement())
+  title       String    @unique
+  description String?
+  releaseYear Int
+  price       Float
+  active      Boolean   @default(true)
+  genreId     Int
+  platformId  Int
+  publisherId Int
+  developerId Int
+  genre       Genre     @relation(fields: [genreId], references: [id])
+  platform    Platform  @relation(fields: [platformId], references: [id])
+  publisher   Publisher @relation(fields: [publisherId], references: [id])
+  developer   Developer @relation(fields: [developerId], references: [id])
+  createdAt DateTime  @default(now())
+  users     UserGame[]
+}
+
+model UserGame {
+  userId Int
+  gameId Int
+
+  user User @relation(fields: [userId], references: [id])
+  game Game @relation(fields: [gameId], references: [id])
+
+  @@id([userId, gameId])
+}
