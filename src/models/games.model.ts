@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ export const GameModel = {
     if (filters?.maxPrice) where.price = { lte: Number(filters.maxPrice) };
 
     const orderBy: Record<string, string> =
-      (sortBy === 'title' || sortBy === 'price')
+      sortBy === 'title' || sortBy === 'price'
         ? { [sortBy]: sortOrder === 'asc' ? 'asc' : 'desc' }
         : { createdAt: 'desc' };
 
@@ -36,11 +36,11 @@ export const GameModel = {
     return prisma.game.findUnique({ where: { title } });
   },
 
-  create(data: any) {
+  create(data: Prisma.GameUncheckedCreateInput) {
     return prisma.game.create({ data });
   },
 
-  update(id: number, data: any) {
+  update(id: number, data: Prisma.GameUncheckedUpdateInput) {
     return prisma.game.update({ where: { id }, data });
   },
 
