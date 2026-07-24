@@ -19,7 +19,7 @@ Construida con Express, Handlebars, Prisma ORM y SQLite.
 
 ### Sin Docker
 
-- Node.js >= 18
+- Node.js >= 22
 - npm o Yarn
 
 ### Con Docker
@@ -101,9 +101,9 @@ docker compose up --build -d
 Esto:
 
 - Construye la imagen multi-stage (build TS → prod)
-- Aplica migraciones con `prisma migrate deploy`
+- Sincroniza el esquema de la base de datos con `prisma db push`
+- Ejecuta el seed automáticamente (pobla 20 usuarios, 20 juegos, 20 relaciones)
 - Inicia el servidor en puerto 3000
-- Persiste la base de datos SQLite en un volume Docker
 
 ### 2. Verificar
 
@@ -125,13 +125,13 @@ Para borrar también la base de datos:
 docker compose down -v
 ```
 
-### 4. Poblar base de datos (opcional)
-
-Si la DB está vacía, ejecutar seed dentro del contenedor:
+### 4. Verificar que el seed corrió
 
 ```bash
-docker compose exec app npm run seed
+docker compose logs | grep "Seed complete"
 ```
+
+Deberías ver: `Seed complete: 20 users, 20 games, 20 user-game relations`
 
 ## Estructura del proyecto
 
@@ -141,7 +141,7 @@ GameVaultDB/
 │   ├── schema.prisma         # Modelos de datos
 │   ├── seed.ts               # Población de base de datos
 │   ├── data/                 # Archivos CSV (datos de prueba)
-│   ├── migrations/           # Migraciones SQL
+│   ├── migrations/           # Migraciones SQL (opcional)
 │   └── dev.db                # Base de datos SQLite
 ├── src/
 │   ├── index.ts              # Punto de entrada
@@ -203,8 +203,8 @@ HTTP Request → Routes → Controllers → Models → Prisma ORM → SQLite
 | `npm start`                 | Ejecutar compilación             |
 | `npm run seed`              | Poblar base de datos             |
 | `npx prisma studio`         | Explorar base de datos (GUI)     |
+| `npx prisma db push`        | Sincronizar esquema con BD       |
 | `npx prisma migrate dev`    | Crear migración (desarrollo)     |
-| `npx prisma migrate deploy` | Aplicar migraciones (producción) |
 
 ## Seguridad
 

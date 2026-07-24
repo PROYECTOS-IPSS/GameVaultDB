@@ -1,41 +1,41 @@
-import { PrismaClient } from "@prisma/client";
-import { hash } from "bcrypt";
-import { createReadStream } from "node:fs";
-import { resolve } from "node:path";
-import csvParser from "csv-parser";
+import { PrismaClient } from '@prisma/client';
+import { hash } from 'bcrypt';
+import { createReadStream } from 'node:fs';
+import { resolve } from 'node:path';
+import csvParser from 'csv-parser';
 
 const prisma = new PrismaClient();
-const dataDir = resolve(__dirname, "data");
+const dataDir = resolve(__dirname, 'data');
 
 function parseCSV(filename: string): Promise<Record<string, string>[]> {
   const { promise, resolve: fulfill, reject } = Promise.withResolvers<Record<string, string>[]>();
   const results: Record<string, string>[] = [];
-  createReadStream(resolve(dataDir, filename), "utf-8")
+  createReadStream(resolve(dataDir, filename), 'utf-8')
     .pipe(csvParser())
-    .on("data", (row) => results.push(row))
-    .on("end", () => fulfill(results))
-    .on("error", reject);
+    .on('data', (row) => results.push(row))
+    .on('end', () => fulfill(results))
+    .on('error', reject);
   return promise;
 }
 
 async function main() {
   // Seed genres
-  const genresData = await parseCSV("genres.csv");
+  const genresData = await parseCSV('genres.csv');
   for (const g of genresData) {
     await prisma.genre.upsert({ where: { name: g.name }, update: {}, create: { name: g.name } });
   }
 
   // Seed platforms
-  const platformsData = await parseCSV("platforms.csv");
+  const platformsData = await parseCSV('platforms.csv');
   for (const p of platformsData) {
     await prisma.platform.upsert({ where: { name: p.name }, update: {}, create: { name: p.name } });
   }
 
   // Load games early to extract missing publishers/developers
-  const gamesData = await parseCSV("games.csv");
+  const gamesData = await parseCSV('games.csv');
 
   // Seed publishers (from CSV + games.csv)
-  const publishersData = await parseCSV("publishers.csv");
+  const publishersData = await parseCSV('publishers.csv');
   const publisherNames = new Set([
     ...publishersData.map((p) => p.name),
     ...gamesData.map((g) => g.publisher).filter(Boolean),
@@ -45,7 +45,7 @@ async function main() {
   }
 
   // Seed developers (from CSV + games.csv)
-  const developersData = await parseCSV("developers.csv");
+  const developersData = await parseCSV('developers.csv');
   const developerNames = new Set([
     ...developersData.map((d) => d.name),
     ...gamesData.map((g) => g.developer).filter(Boolean),
@@ -55,7 +55,7 @@ async function main() {
   }
 
   // Seed users (hash password from CSV per user)
-  const usersData = await parseCSV("users.csv");
+  const usersData = await parseCSV('users.csv');
   for (const u of usersData) {
     const hashedPassword = await hash(u.password, 10);
     await prisma.user.upsert({
@@ -67,7 +67,7 @@ async function main() {
         segundoApellido: u.segundoApellido,
         email: u.email,
         password: hashedPassword,
-        active: u.active === "true",
+        active: u.active === 'true',
         createdAt: new Date(u.createdAt),
       },
     });
@@ -94,14 +94,22 @@ async function main() {
     const developer = developersMap[g.developer];
 
     if (!genre || !platform || !publisher || !developer) {
-      console.warn(`Skipping "${g.title}": missing relation`, { genre, platform, publisher, developer });
+      console.warn(`Skipping "${g.title}": missing relation`, {
+        genre,
+        platform,
+        publisher,
+        developer,
+      });
       continue;
     }
 
     const releaseYear = Number(g.releaseYear);
     const price = Number(g.price);
     if (!Number.isFinite(releaseYear) || !Number.isFinite(price)) {
-      console.warn(`Skipping "${g.title}": invalid numeric data`, { releaseYear: g.releaseYear, price: g.price });
+      console.warn(`Skipping "${g.title}": invalid numeric data`, {
+        releaseYear: g.releaseYear,
+        price: g.price,
+      });
       continue;
     }
 
@@ -113,7 +121,7 @@ async function main() {
         description: g.description || null,
         releaseYear,
         price,
-        active: g.active === "true",
+        active: g.active === 'true',
         genreId: genre.id,
         platformId: platform.id,
         publisherId: publisher.id,
@@ -123,8 +131,8 @@ async function main() {
   }
 
   // Seed user-game relations (relacionar usuarios con juegos)
-  const users = await prisma.user.findMany({ take: 5, orderBy: { id: "asc" } });
-  const games = await prisma.game.findMany({ orderBy: { id: "asc" } });
+  const users = await prisma.user.findMany({ take: 5, orderBy: { id: 'asc' } });
+  const games = await prisma.game.findMany({ orderBy: { id: 'asc' } });
   const rels: { userId: number; gameId: number }[] = [];
   // primeiros 3 usuarios → juegos 1-4
   for (let i = 0; i < 3 && i < users.length; i++) {
@@ -157,7 +165,9 @@ async function main() {
     prisma.game.count(),
     prisma.userGame.count(),
   ]);
-  console.log(`Seed complete: ${usersCount} users, ${gamesCount} games, ${relsCount} user-game relations`);
+  console.log(
+    `Seed complete: ${usersCount} users, ${gamesCount} games, ${relsCount} user-game relations`,
+  );
 }
 
 main()

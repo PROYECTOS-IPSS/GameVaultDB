@@ -22,9 +22,9 @@ export const GameController = {
           GameModel.getMaxPrice(),
           GameModel.findInactive(),
         ]);
-      
+
       const selectedMaxPrice = filters.maxPrice || catalogMaxPrice;
-      
+
       let userGameIds: number[] = [];
       if (req.session.userId) {
         userGameIds = await CollectionModel.getUserGameIds(req.session.userId);
@@ -80,12 +80,12 @@ export const GameController = {
         GameModel.getFilterData(),
         GameModel.getMaxPrice(),
       ]);
-      res.render('games/form', { 
-        genres, 
-        platforms, 
-        publishers, 
+      res.render('games/form', {
+        genres,
+        platforms,
+        publishers,
         developers,
-        maxPrice 
+        maxPrice,
       });
     } catch (error) {
       console.error(error);
@@ -112,14 +112,14 @@ export const GameController = {
           GameModel.getFilterData(),
           GameModel.getMaxPrice(),
         ]);
-        return res.status(400).render('games/form', { 
-          errors, 
+        return res.status(400).render('games/form', {
+          errors,
           formData: data,
-          genres, 
-          platforms, 
-          publishers, 
+          genres,
+          platforms,
+          publishers,
           developers,
-          maxPrice 
+          maxPrice,
         });
       }
 
@@ -132,7 +132,11 @@ export const GameController = {
         return res.status(400).render('games/form', {
           errors: ['El título del juego ya existe'],
           formData: validation.data,
-          genres, platforms, publishers, developers, maxPrice,
+          genres,
+          platforms,
+          publishers,
+          developers,
+          maxPrice,
         });
       }
 
@@ -184,15 +188,15 @@ export const GameController = {
           GameModel.getFilterData(),
           GameModel.getMaxPrice(),
         ]);
-        return res.status(400).render('games/form', { 
-          errors, 
+        return res.status(400).render('games/form', {
+          errors,
           game: { id, ...data },
           formData: data,
-          genres, 
-          platforms, 
-          publishers, 
+          genres,
+          platforms,
+          publishers,
           developers,
-          maxPrice 
+          maxPrice,
         });
       }
 
@@ -207,7 +211,11 @@ export const GameController = {
             errors: ['El título del juego ya existe'],
             game: { id, ...validation.data },
             formData: validation.data,
-            genres, platforms, publishers, developers, maxPrice,
+            genres,
+            platforms,
+            publishers,
+            developers,
+            maxPrice,
           });
         }
       }
