@@ -64,7 +64,6 @@ async function main() {
       create: {
         nombre: u.nombre,
         apellido: u.apellido,
-        segundoApellido: u.segundoApellido,
         email: u.email,
         password: hashedPassword,
         active: u.active === 'true',

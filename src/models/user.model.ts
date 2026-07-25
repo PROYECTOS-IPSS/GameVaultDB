@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export type CreateUserInput = {
   nombre: string;
   apellido: string;
-  segundoApellido: string;
   email: string;
   password: string;
 };
@@ -26,7 +25,6 @@ export const UserModel = {
       data: {
         nombre: data.nombre,
         apellido: data.apellido,
-        segundoApellido: data.segundoApellido,
         email: data.email,
         password,
       },

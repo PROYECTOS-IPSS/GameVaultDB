@@ -21,7 +21,7 @@
 
             <form action="/auth/register" method="POST" novalidate>
               <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label class="form-label" for="nombre">Nombre</label>
                   <input
                     id="nombre"
@@ -32,24 +32,13 @@
                     required
                   >
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <label class="form-label" for="apellido">Apellido</label>
                   <input
                     id="apellido"
                     type="text"
                     name="apellido"
                     value="{{values.apellido}}"
-                    class="form-control bg-dark text-light border-secondary"
-                    required
-                  >
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label" for="segundoApellido">Segundo apellido</label>
-                  <input
-                    id="segundoApellido"
-                    type="text"
-                    name="segundoApellido"
-                    value="{{values.segundoApellido}}"
                     class="form-control bg-dark text-light border-secondary"
                     required
                   >

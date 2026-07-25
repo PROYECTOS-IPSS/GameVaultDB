@@ -19,4 +19,4 @@ COPY views ./views
 COPY public ./public
 RUN npx prisma generate
 EXPOSE 3000
-CMD ["sh","-c","npx prisma db push && node dist/prisma/seed.js && node dist/index.js"]
+CMD ["sh","-c","npx prisma db push --accept-data-loss && node dist/prisma/seed.js && node dist/index.js"]
