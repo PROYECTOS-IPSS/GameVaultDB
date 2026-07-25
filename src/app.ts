@@ -20,7 +20,8 @@ app.engine(
     partialsDir: path.join(__dirname, '..', 'views', 'partials'),
     helpers: {
       eq: (a: unknown, b: unknown) => a === b,
-      includes: (value: unknown, array: unknown[]) => Array.isArray(array) && array.includes(value as never),
+      includes: (value: unknown, array: unknown[]) =>
+        Array.isArray(array) && array.includes(value as never),
     },
   }),
 );

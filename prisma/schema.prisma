@@ -12,7 +12,6 @@ model User {
   id               Int      @id @default(autoincrement())
   nombre           String
   apellido         String
-  segundoApellido  String
   email            String   @unique
   password         String
   active           Boolean  @default(true)

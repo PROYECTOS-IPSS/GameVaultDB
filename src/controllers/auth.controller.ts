@@ -27,7 +27,6 @@ export const AuthController = {
       values: {
         nombre: '',
         apellido: '',
-        segundoApellido: '',
         email: '',
       },
       error: null,
@@ -63,7 +62,6 @@ export const AuthController = {
       const user = await UserModel.create({
         nombre: parsed.data.nombre,
         apellido: parsed.data.apellido,
-        segundoApellido: parsed.data.segundoApellido,
         email: parsed.data.email,
         password: parsed.data.password,
       });
