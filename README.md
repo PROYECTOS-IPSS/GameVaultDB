@@ -15,6 +15,16 @@ Construida con Express, Handlebars, Prisma ORM y SQLite.
 - **Estilos:** Bootstrap 5
 - **Contenedores:** Docker + Docker Compose (opcional)
 
+## ¿Por qué este stack?
+
+Elegimos este stack por **simpleza** y **afinidad** — ya habíamos trabajado con estas herramientas antes, lo que redujo la curva de aprendizaje y nos permitió enfocarnos en la lógica del proyecto.
+
+- **SQLite**: al ser una aplicación pequeña, SQLite nos permitió manejar la base de datos de forma más sencilla, sin necesidad de configurar un servidor de base de datos externo.
+- **Prisma ORM**: trabajar con Prisma facilita las consultas a la base de datos, tipado fuerte y migraciones controladas.
+- **Handlebars**: está bien integrado con Express, permite renderizado del servidor sin complejidad adicional.
+- **bcrypt**: hashea las contraseñas antes de guardarlas en la base de datos, evitando que se almacenen en texto plano.
+- **Zod**: útil para validaciones de entrada, garantiza que los datos que llegan a los controladores cumplan el esquema esperado antes de procesarlos.
+
 ## Requisitos
 
 ### Sin Docker
@@ -232,6 +242,22 @@ Este proyecto se desarrolla con un arnés agéntico (**Oh My Pi + OpenCode Go**)
 - Contraseñas con **bcryptjs** (hash + salt), nunca texto plano.
 - **Soft delete** mediante campo `deletedAt` — no hay hard delete.
 - Git: nunca trabajar sobre `main`, ramas por funcionalidad (`feat/*`, `fix/*`, `docs/*`).
+
+### Modelos de IA
+
+Modelos utilizados en el arnés, cada uno con un rol distinto:
+
+| Modelo              | Uso principal                 |
+| ------------------- | ----------------------------- |
+| Qwen 3.7 Max        | Slow — razonamiento profundo y revisión compleja                     |
+| Qwen 3.7 Plus       | Default — modelo de sesión estándar, implementa la lógica del proyecto |
+| Deepseek-v4-flash   | Smol — subagentes para tareas mecánicas, exploración y búsquedas    |
+| Grok 4.5            | Refactor y revisión de código                                        |
+**Diferencias entre variantes de modelo:**
+
+- **slow**: modelo más potente y capaz, el que más tokens consume. Se usa para tareas que requieren razonamiento profundo, revisión de código compleja o decisiones de diseño importantes.
+- **default**: modelo intermedio, equilibra capacidad y consumo de tokens. Es el modelo de sesión estándar — más capaz que smol sin gastar tantos tokens como slow.
+- **smol** (o **low**): modelo rápido y económico, con menor capacidad de razonamiento. Se asigna a subagentes para tareas mecánicas como exploración de código (scout), búsquedas, reorganización de archivos o data entry. No se usa para lógica de negocio ni decisiones de diseño.
 
 ### Instrucciones especiales (skills activos)
 
