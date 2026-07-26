@@ -15,6 +15,16 @@ Construida con Express, Handlebars, Prisma ORM y SQLite.
 - **Estilos:** Bootstrap 5
 - **Contenedores:** Docker + Docker Compose (opcional)
 
+## ¿Por qué este stack?
+
+Elegimos este stack por **simpleza** y **afinidad** — ya habíamos trabajado con estas herramientas antes, lo que redujo la curva de aprendizaje y nos permitió enfocarnos en la lógica del proyecto.
+
+- **SQLite**: al ser una aplicación pequeña, SQLite nos permitió manejar la base de datos de forma más sencilla, sin necesidad de configurar un servidor de base de datos externo.
+- **Prisma ORM**: trabajar con Prisma facilita las consultas a la base de datos, tipado fuerte y migraciones controladas.
+- **Handlebars**: está bien integrado con Express, permite renderizado del servidor sin complejidad adicional.
+- **bcrypt**: hashea las contraseñas antes de guardarlas en la base de datos, evitando que se almacenen en texto plano.
+- **Zod**: útil para validaciones de entrada, garantiza que los datos que llegan a los controladores cumplan el esquema esperado antes de procesarlos.
+
 ## Requisitos
 
 ### Sin Docker
