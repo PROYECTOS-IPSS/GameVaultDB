@@ -213,3 +213,38 @@ HTTP Request → Routes → Controllers → Models → Prisma ORM → SQLite
 - Middleware de autenticación protege rutas privadas
 - Validación de entradas con Zod en todos los endpoints
 - Soft delete: registros no se eliminan físicamente (campo `deletedAt`)
+
+## Constitución del arnés agéntico
+
+Este proyecto se desarrolla con un arnés agéntico (**Oh My Pi + OpenCode Go**). A continuación se describe cómo se configuró.
+
+### Archivos de contexto
+
+- `AGENTS.md` (raíz del proyecto): contrato principal que el agente lee en cada turno. Define arquitectura MVC, stack, convenciones de nombres, seguridad, soft delete, flujo Git y criterios de calidad.
+- `~/.config/opencode/AGENTS.md`: contexto global del usuario, agrega la directiva de usar Context7 para documentación actualizada de librerías.
+
+### Reglas
+
+- Arquitectura MVC estricta: rutas sin lógica, controladores sin Prisma, modelos sin vistas.
+- TypeScript estricto, sin `any`, `async/await` en toda operación de BD.
+- Prisma ORM como única fuente de acceso a datos — SQL manual solo en casos extremos.
+- Validación de entradas con **Zod** (`safeParse`) en controladores.
+- Contraseñas con **bcryptjs** (hash + salt), nunca texto plano.
+- **Soft delete** mediante campo `deletedAt` — no hay hard delete.
+- Git: nunca trabajar sobre `main`, ramas por funcionalidad (`feat/*`, `fix/*`, `docs/*`).
+
+### Instrucciones especiales (skills activos)
+
+- **Ponytail** (nivel full): ladder de minimalismo — YAGNI, reutilizar antes que escribir, stdlib antes que dependencia, diff más corto que funcione.
+- **Caveman** (nivel ultra): comunicación comprimida, sin artículos ni relleno.
+- **Frontend Design**: guía de dirección visual para vistas con Bootstrap — tipografía, espaciado y estética intencional, no templada.
+- **Context7**: resolución de librerías y consulta de documentación actualizada antes de confiar en memoria del modelo.
+
+### Flujo de trabajo con el agente
+
+1. El agente carga `AGENTS.md` al inicio de cada sesión.
+2. Lee el request, mapea archivos afectados y traza el flujo end-to-end.
+3. Aplica el ladder de Ponytail antes de escribir código.
+4. Edita respetando las capas MVC y las convenciones de nombres (`user.controller.ts`, `user.model.ts`, etc.).
+5. Verifica el cambio (ejecución, test o smoke) antes de cerrar.
+6. No hace commit automático — espera confirmación del desarrollador.
