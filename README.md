@@ -254,11 +254,11 @@ Modelos utilizados en el arnés, cada uno con un rol distinto:
 | Qwen 3.7 Plus       | Documentación — redacción de README, comentarios y tareas auxiliares |
 | Grok 4.5            | Documentación — refinamiento de textos y descripciones               |
 | Kimi-k2.7-code      | Refactor y revisión — tareas específicas de código                   |
-
 **Diferencias entre variantes de modelo:**
 
-- **default**: modelo principal de la sesión, el de mayor capacidad de razonamiento. Se usa para implementar características, diseñar arquitectura y tomar decisiones técnicas.
-- **low** (o **smol**): modelo más rápido y económico, con menor capacidad de razonamiento. Se asigna a subagentes para tareas mecánicas como exploración de código (scout), búsquedas, reorganización de archivos o data entry. No se usa para lógica de negocio ni decisiones de diseño.
+- **slow**: modelo más potente y capaz, el que más tokens consume. Se usa para tareas que requieren razonamiento profundo, revisión de código compleja o decisiones de diseño importantes.
+- **default**: modelo intermedio, equilibra capacidad y consumo de tokens. Es el modelo de sesión estándar — más capaz que smol sin gastar tantos tokens como slow.
+- **smol** (o **low**): modelo rápido y económico, con menor capacidad de razonamiento. Se asigna a subagentes para tareas mecánicas como exploración de código (scout), búsquedas, reorganización de archivos o data entry. No se usa para lógica de negocio ni decisiones de diseño.
 
 ### Instrucciones especiales (skills activos)
 
